@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -23,17 +24,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/index").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/admin").permitAll()
+//                .antMatchers("/admin/**").authenticated()
+//                .antMatchers("/users/**").authenticated()
+                .anyRequest().permitAll()
                 .and()
-                .formLogin().successHandler(successUserHandler)
+                .formLogin()
+                .loginPage("/custom-login")
                 .permitAll()
                 .and()
                 .logout()
                 .permitAll();
     }
 
-    // аутентификация inMemory
+//     аутентификация inMemory
     @Bean
     @Override
     public UserDetailsService userDetailsService() {

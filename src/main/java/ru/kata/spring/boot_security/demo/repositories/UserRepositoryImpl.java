@@ -1,9 +1,10 @@
-package ru.kata.spring.boot_security.demo.dao;
+package ru.kata.spring.boot_security.demo.repositories;
 
-import ru.kata.spring.boot_security.demo.model.User;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.entities.User;
+
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

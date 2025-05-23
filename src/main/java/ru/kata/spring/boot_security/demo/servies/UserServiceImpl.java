@@ -19,12 +19,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsers() {
-        return userRepository.getUsers();
+        return userRepository.findAll();
     }
 
     @Override
-    public User getUser(int id) {
-        return userRepository.getUser(id);
+    public User getUser(long id) {
+        return userRepository.getById(id);
     }
 
     @Override
@@ -33,12 +33,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(int id, User user) {
-        userRepository.update(id, user);
+    public void update(long id, User user) {
+        userRepository.save(user);
     }
 
     @Override
-    public void delete(int id) {
-        userRepository.delete(id);
+    public void delete(long id) {
+        userRepository.deleteById(id);
     }
 }

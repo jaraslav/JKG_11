@@ -13,6 +13,7 @@
   <thead>
   <tr>
     <th scope="col">Id</th>
+    <th scope="col">Email</th>
     <th scope="col">Name</th>
     <th scope="col">LastName</th>
     <th scope="col">Height</th>
@@ -24,6 +25,7 @@
   <tbody>
   <tr th:each="user: ${user}">
     <td th:text="${user.id}"/>
+    <td th:text="${user.email}"/>
     <td th:text="${user.username}"/>
     <td th:text="${user.lastName}"/>
     <td th:text="${user.height}"/>
@@ -33,11 +35,19 @@
   </tbody>
 </table>
 
-<a th:href="@{/admin/edit?id={id}(id=${user.getId()})}">Edit</a>
+<form th:method="POST" th:action="@{/admin/edit?id={id}(id=${user.getId()})}">
+  <br/>
+  <input type="submit" value="Edit"/>
+</form>
 
 <form th:method="POST" th:action="@{/admin/delete?id={id}(id=${user.getId()})}">
   <br/>
   <input type="submit" value="Delete"/>
+</form>
+
+<form th:action="@{/logout}" method="post">
+  <br/>
+  <button type="submit">Logout</button>
 </form>
 
 </body>

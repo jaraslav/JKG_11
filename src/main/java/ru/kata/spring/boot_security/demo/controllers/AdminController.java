@@ -1,61 +1,74 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
-import ru.kata.spring.boot_security.demo.servies.UserService;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
+import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    private UserService userService;
+    private UserRepository userRepository;
+    private RoleRepository roleRepository;
 
     @Autowired
-    public AdminController(UserService carService) {
-        this.userService = carService;
+    public AdminController(UserRepository carService,
+                           RoleRepository roleRepository) {
+        this.userRepository = carService;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping()
-    public String showUsers(@RequestParam(value = "id", defaultValue = "0") int id, ModelMap model) {
+    public String showUsers(@RequestParam(value = "id", defaultValue = "0") Long id, ModelMap model) {
         if (id != 0) {
-            model.addAttribute("user", userService.getUser(id));
-            return "pages/user";
+            model.addAttribute("user", userRepository.getById(id));
+            return "for_admins/user";
         }
-        model.addAttribute("users", userService.getUsers());
-        return "pages/users";
+        model.addAttribute("users", userRepository.findAll());
+        return "for_admins/admin";
     }
 
     @GetMapping("/new")
     public String newUser(ModelMap modelMap) {
         modelMap.addAttribute("user", new User());
-        return "pages/new";
+        return "for_admins/new";
     }
 
     @PostMapping("save")
-    public String create(@ModelAttribute("user") User user) {
-        userService.save(user);
+    public String create(@ModelAttribute("user") User user,
+                         @RequestParam(required = false) boolean isAdmin) {
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleRepository.findByName("ROLE_USER"));
+        if (isAdmin) {
+            roles.add(roleRepository.findByName("ROLE_ADMIN"));
+        }
+        user.setRoles(roles);
+        userRepository.save(user);
         return "redirect:/admin";
     }
 
-    @GetMapping("/edit")
-    public String edit(@RequestParam(value = "id", defaultValue = "0") int id, ModelMap model) {
-        model.addAttribute("user", userService.getUser(id));
-        return "pages/edit";
+    @PostMapping("edit")
+    public String edit(@RequestParam(value = "id", defaultValue = "0") Long id, ModelMap model) {
+        model.addAttribute("user", userRepository.getById(id));
+        return "for_admins/edit";
     }
 
     @PostMapping("update")
-    public String update(@RequestParam(value = "id", defaultValue = "0") int id, User user) {
-        userService.update(id, user);
+    public String update(User user) {
+        userRepository.save(user);
         return "redirect:/admin";
     }
 
     @PostMapping("delete")
-    public String delete(@RequestParam(value = "id", defaultValue = "0") int id) {
-        userService.delete(id);
+    public String delete(@RequestParam(value = "id", defaultValue = "0") Long id) {
+        userRepository.deleteById(id);
         return "redirect:/admin";
     }
 }

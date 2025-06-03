@@ -5,7 +5,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,14 +21,20 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(unique = true)
+    @NotEmpty(message = "Email should not be empty")
+    @Email(message = "Email should be valid")
+    private String email;
     @Column(name = "username")
     private String username;
     @Column(name = "last_name")
-    private String lastName;
+    private String lastname;
     @Column(name = "height")
     private double height; //рост
     @Column(name = "weight")
     private int weight; //вес
+    @Column(name = "password")
+    private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -37,9 +46,11 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String username, String lastName, double height, int weight) {
+    public User(String email, String password, String username, String lastName, double height, int weight) {
+        this.email = email;
+        this.password = password;
         this.username = username;
-        this.lastName = lastName;
+        this.lastname = lastName;
         this.weight = weight;
         this.height = height;
     }
@@ -57,11 +68,11 @@ public class User implements UserDetails {
     }
 
     public String getLastName() {
-        return lastName;
+        return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastName(String lastname) {
+        this.lastname = lastname;
     }
 
     public int getWeight() {
@@ -88,6 +99,19 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
     public String getDiagnosis() {
         double index = weight/(height * height);
         String diagnosis = "not correct biometric data";
@@ -111,7 +135,7 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-        return id + " " + username + " " + lastName + ", рост-" + height + "м. вес-" + weight + "кг. ";
+        return id + " " + username + " " + lastname + ", рост-" + height + "м. вес-" + weight + "кг. ";
     }
 
     //////// for UserDetails ///////////////////////////
@@ -125,7 +149,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return getLastName();
+        return password;
     }
 
     @Override

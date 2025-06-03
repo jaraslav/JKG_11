@@ -9,6 +9,12 @@
 <body>
 
 <form th:method="POST" th:action="@{/admin/save}" th:object="${user}">
+  <label for="email">Enter email: </label>
+  <input type="email" th:field="*{email}" id="email"/>
+  <br/>
+  <label for="password">Enter email: </label>
+  <input type="password" th:field="*{password}" id="password"/>
+  <br/>
   <label for="name">Enter name: </label>
   <input type="text" th:field="*{username}" id="name"/>
   <br/>
@@ -20,8 +26,18 @@
   <br/>
   <label for="weight">Enter weight in kilograms: </label>
   <input type="text" th:field="*{weight}" id="weight"/>
-  <br/>
+  <div>
+    <label>
+      <input type="checkbox" name="isAdmin"> Grant ADMIN privileges
+    </label>
+  <br/><br/>
   <input type="submit" value="Create!"/>
+</form>
+
+
+<form th:action="@{/logout}" method="post">
+  <br/>
+  <button type="submit">Logout</button>
 </form>
 
 </body>

@@ -8,6 +8,9 @@ import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+import ru.kata.spring.boot_security.demo.services.RoleService;
+import ru.kata.spring.boot_security.demo.services.UserService;
+
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,23 +18,23 @@ import java.util.Set;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
+    private UserService userService;
+    private RoleService roleService;
 
     @Autowired
-    public AdminController(UserRepository carService,
-                           RoleRepository roleRepository) {
-        this.userRepository = carService;
-        this.roleRepository = roleRepository;
+    public AdminController(UserService carService,
+                           RoleService roleRepository) {
+        this.userService = carService;
+        this.roleService = roleRepository;
     }
 
     @GetMapping()
     public String showUsers(@RequestParam(value = "id", defaultValue = "0") Long id, ModelMap model) {
         if (id != 0) {
-            model.addAttribute("user", userRepository.getById(id));
+            model.addAttribute("user", userService.getById(id));
             return "for_admins/user";
         }
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("users", userService.findAll());
         return "for_admins/admin";
     }
 
@@ -45,30 +48,30 @@ public class AdminController {
     public String create(@ModelAttribute("user") User user,
                          @RequestParam(required = false) boolean isAdmin) {
         Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findByName("ROLE_USER"));
+        roles.add(roleService.findByName("ROLE_USER"));
         if (isAdmin) {
-            roles.add(roleRepository.findByName("ROLE_ADMIN"));
+            roles.add(roleService.findByName("ROLE_ADMIN"));
         }
         user.setRoles(roles);
-        userRepository.save(user);
+        userService.save(user);
         return "redirect:/admin";
     }
 
     @PostMapping("edit")
     public String edit(@RequestParam(value = "id", defaultValue = "0") Long id, ModelMap model) {
-        model.addAttribute("user", userRepository.getById(id));
+        model.addAttribute("user", userService.getById(id));
         return "for_admins/edit";
     }
 
     @PostMapping("update")
     public String update(User user) {
-        userRepository.save(user);
+        userService.save(user);
         return "redirect:/admin";
     }
 
     @PostMapping("delete")
     public String delete(@RequestParam(value = "id", defaultValue = "0") Long id) {
-        userRepository.deleteById(id);
+        userService.deleteById(id);
         return "redirect:/admin";
     }
 }

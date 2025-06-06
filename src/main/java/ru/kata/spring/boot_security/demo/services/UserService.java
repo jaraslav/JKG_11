@@ -20,7 +20,6 @@ public class UserService {
      public UserService(UserRepository repository) {
         this.repository = repository;
      }
-
      @EntityGraph(attributePaths = {"roles"})
      public Optional<User> findByEmail(String email) {
          return repository.findByEmail(email);

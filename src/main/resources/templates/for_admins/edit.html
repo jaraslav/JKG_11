@@ -26,7 +26,12 @@
   <br/>
   <label for="weight">Enter weight: </label>
   <input type="text" th:field="*{weight}" id="weight"/>
-  <br/><br/>
+  <br/>
+  <div>
+    <label>
+      <input type="checkbox" name="isAdmin"> Grant ADMIN privileges
+    </label>
+  </div><br/>
   <input type="submit" value="Update!"/>
 </form>
 

@@ -1,15 +1,16 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
-import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import ru.kata.spring.boot_security.demo.services.RoleService;
+import ru.kata.spring.boot_security.demo.services.RoleServiceImpl;
 import ru.kata.spring.boot_security.demo.services.UserService;
+import ru.kata.spring.boot_security.demo.services.UserServiceImpl;
 
 
 import java.util.HashSet;
@@ -23,9 +24,9 @@ public class AdminController {
 
     @Autowired
     public AdminController(UserService carService,
-                           RoleService roleRepository) {
+                           RoleService roleService) {
         this.userService = carService;
-        this.roleService = roleRepository;
+        this.roleService = roleService;
     }
 
     @GetMapping()
@@ -53,6 +54,7 @@ public class AdminController {
             roles.add(roleService.findByName("ROLE_ADMIN"));
         }
         user.setRoles(roles);
+        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         userService.save(user);
         return "redirect:/admin";
     }
@@ -64,7 +66,15 @@ public class AdminController {
     }
 
     @PostMapping("update")
-    public String update(User user) {
+    public String update(@ModelAttribute("user") User user,
+                         @RequestParam(required = false) boolean isAdmin) {
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleService.findByName("ROLE_USER"));
+        if (isAdmin) {
+            roles.add(roleService.findByName("ROLE_ADMIN"));
+        }
+        user.setRoles(roles);
+        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         userService.save(user);
         return "redirect:/admin";
     }

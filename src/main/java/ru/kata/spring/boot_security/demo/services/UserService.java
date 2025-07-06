@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.services;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.ModelMap;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
@@ -18,4 +19,7 @@ public interface UserService {
     List<User> findAll();
     void save(User user);
     void deleteById(Long id);
+
+    void updateUser(User user, Boolean isAdmin);
+    void createUser(User user, Boolean isAdmin);
 }

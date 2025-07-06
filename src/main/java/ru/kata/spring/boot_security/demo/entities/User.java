@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @Column(name = "height")
     private Double height; //рост
     @Column(name = "weight")
-    private int weight; //вес
+    private Integer weight; //вес
     @Column(name = "password")
     private String password;
 
@@ -75,11 +75,11 @@ public class User implements UserDetails {
         this.lastname = lastname;
     }
 
-    public int getWeight() {
+    public Integer getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(Integer weight) {
         this.weight = weight;
     }
 
